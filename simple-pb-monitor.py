@@ -1,4 +1,4 @@
-import requests, time, sys, os
+import requests, time, sys, os, io
 
 # Check for command line parameters for the keywords file and output directory
 # Start with defaults of ./keywords.txt and .
@@ -21,17 +21,18 @@ if len(sys.argv) > 3 :
     if 'True' in (sys.argv)[3] :
         check_ip = True
 
-# Load the keywords
-with open(keyword_file) as f:
-    keywords = f.read().splitlines()
-
-print ("keywords ",keywords)
 
 check_index = 0
 check_list = []
 
 while True :
     print ("Starting a loop")
+	
+	# Load the keywords
+    with open(keyword_file) as f:
+        keywords = f.read().splitlines()
+
+    print ("keywords ",keywords)
 
     # get the jsons from the scraping api
     r = requests.get("https://scrape.pastebin.com/api_scraping.php?limit=100")
@@ -67,7 +68,7 @@ while True :
                                 os.mkdir (output_path+'/'+word)
 
                             # Save to current dir using the key as the filename
-                            file_object = open(output_path+'/'+word+'/'+individual['key'], 'w')
+                            file_object = open(output_path+'/'+word+'/'+individual['key'], 'w', encoding="utf-8")
                             file_object.write(text)
                             file_object.close()
 
@@ -90,6 +91,5 @@ while True :
     # wait a minute
     print ("Sleeping a minute")
     time.sleep(60)
-
 
 
